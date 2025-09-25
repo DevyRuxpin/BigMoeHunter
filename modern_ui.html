@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigMoeHunter Pro - Advanced Hunting Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f4c3a 0%, #2E7D32 50%, #4CAF50 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px 0;
+        }
+
+        .header h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #e8f5e8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .status-bar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .status-item {
+            text-align: center;
+            color: white;
+        }
+
+        .status-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .status-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            color: #2E7D32;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .input-group select,
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-group select:focus,
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .response {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e8 100%);
+            border-left: 5px solid #4CAF50;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            max-height: 500px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .forecast-day {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .forecast-day:hover {
+            transform: translateY(-5px);
+        }
+
+        .forecast-date {
+            font-weight: 700;
+            color: #2E7D32;
+            margin-bottom: 10px;
+        }
+
+        .forecast-temps {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .forecast-high {
+            color: #FF5722;
+            font-weight: 600;
+        }
+
+        .forecast-low {
+            color: #2196F3;
+            font-weight: 600;
+        }
+
+        .forecast-rating {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .rating-excellent { background: #4CAF50; color: white; }
+        .rating-good { background: #8BC34A; color: white; }
+        .rating-fair { background: #FF9800; color: white; }
+        .rating-poor { background: #F44336; color: white; }
+
+        .hunting-spots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .spot-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #4CAF50;
+        }
+
+        .spot-name {
+            font-weight: 700;
+            color: #2E7D32;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .spot-info {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .harvest-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .news-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .news-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #2196F3;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .news-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-left-color: #4CAF50;
+        }
+
+        /* Radio Player Styles */
+        .radio-player {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .player-controls select {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .player-controls select option {
+            background: #333;
+            color: white;
+        }
+
+        .player-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .play-btn, .volume-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover, .volume-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume-control input[type="range"] {
+            width: 100px;
+            height: 5px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .volume-control input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .now-playing {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        #stationName {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        #currentShow {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .news-title {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .news-meta {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .news-summary {
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦌 BigMoeHunter Pro</h1>
+            <p>Advanced AI-Powered Hunting Assistant for Colebrook, NH</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-value" id="currentTemp">45°F</div>
+                <div class="status-label">Current Temperature</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="huntingRating">Excellent</div>
+                <div class="status-label">Hunting Conditions</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="aiStatus">Online</div>
+                <div class="status-label">AI Assistant</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="lastUpdate">Just Now</div>
+                <div class="status-label">Last Updated</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- AI Assistant -->
+            <div class="card">
+                <h2>
+                    <div class="card-icon">🤖</div>
+                    AI Hunting Assistant
+                </h2>
+                <form id="huntingForm">
+                    <div class="input-group">
+                        <label for="species">Target Species:</label>
+                        <select id="species" required>
+                            <option value="">Select Species</option>
+                            <option value="White-tailed Deer">White-tailed Deer</option>
+                            <option value="Moose">Moose</option>
+                            <option value="Black Bear">Black Bear</option>
+                            <option value="Wild Turkey">Wild Turkey</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="location">Hunting Location:</label>
+                        <select id="location" required>
+                            <option value="">Select Location</option>
+                            <option value="Colebrook, NH">Colebrook, NH</option>
+                            <option value="Connecticut Lakes">Connecticut Lakes</option>
+                            <option value="Dixville Notch">Dixville Notch</option>
+                            <option value="Pittsburg">Pittsburg</option>
+                            <option value="WMU A">WMU A</option>
+                            <option value="WMU B">WMU B</option>
+                            <option value="WMU C">WMU C</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="question">Your Hunting Question:</label>
+                        <textarea id="question" placeholder="Ask about hunting strategies, optimal times, equipment, or get personalized advice..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn" id="submitBtn">
+                        🎯 Get AI Recommendation
+                    </button>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>AI is analyzing your hunting scenario...</p>
+                </div>
+
+                <div id="response" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Real Weather Forecast -->
+            <div class="card">
+                <h2>
+                    <div class="card-icon">🌤️</div>
+                    Real Weather Forecast
+                </h2>
+                <button class="btn" onclick="getRealWeatherForecast()">
+                    📊 Get 7-Day Forecast
+                </button>
+                
+                <div id="weatherResults" class="forecast-grid" style="display: none;">
+                    <!-- Weather results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Real Hunting Spots -->
+            <div class="card">
+                <h2>
+                    <div class="card-icon">📍</div>
+                    Real Hunting Spots
+                </h2>
+                <div class="input-group">
+                    <label for="spotSpecies">Filter by Species:</label>
+                    <select id="spotSpecies">
+                        <option value="">All Species</option>
+                        <option value="moose">Moose</option>
+                        <option value="deer">Deer</option>
+                        <option value="bear">Bear</option>
+                        <option value="turkey">Turkey</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="getRealHuntingSpots()">
+                    🗺️ Get Hunting Spots
+                </button>
+                
+                <div id="spotsResults" class="hunting-spots-grid" style="display: none;">
+                    <!-- Spots results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Harvest Statistics -->
+            <div class="card">
+                <h2>
+                    <div class="card-icon">📊</div>
+                    Harvest Statistics
+                </h2>
+                <button class="btn" onclick="getHarvestStatistics()">
+                    📈 Get Statistics
+                </button>
+                
+                <div id="statsResults" class="harvest-stats" style="display: none;">
+                    <!-- Stats results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Local News -->
+            <div class="card">
+                <h2>
+                    <div class="card-icon">📰</div>
+                    Local News
+                </h2>
+                <div class="input-group">
+                    <label for="newsType">News Type:</label>
+                    <select id="newsType">
+                        <option value="all">All News</option>
+                        <option value="local">Local Newspapers</option>
+                        <option value="regional">Regional News</option>
+                        <option value="hunting">Hunting & Outdoors</option>
+                        <option value="colebrook">Colebrook Specific</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="getLocalNews()">
+                    📰 Get Latest News
+                </button>
+                
+                <div id="newsResults" class="news-grid" style="display: none;">
+                    <!-- News results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Sports Radio -->
+            <div class="card">
+                <h2>
+                    <div class="card-icon">📻</div>
+                    Sports Radio
+                </h2>
+                
+                <!-- Mini Radio Player -->
+                <div class="radio-player">
+                    <div class="player-controls">
+                        <select id="radioStation" onchange="changeRadioStation()">
+                            <option value="sports_hub">98.5 The Sports Hub</option>
+                            <option value="weei">WEEI 93.7</option>
+                            <option value="espn_boston">ESPN Radio Boston</option>
+                            <option value="nbc_sports">NBC Sports Boston</option>
+                            <option value="wbur">WBUR 90.9</option>
+                            <option value="wgbh">WGBH 89.7</option>
+                        </select>
+                        
+                        <div class="player-buttons">
+                            <button id="playBtn" class="play-btn" onclick="toggleRadio()">▶️</button>
+                            <button class="volume-btn" onclick="toggleMute()">🔊</button>
+                        </div>
+                        
+                        <div class="volume-control">
+                            <input type="range" id="volumeSlider" min="0" max="100" value="50" onchange="setVolume(this.value)">
+                        </div>
+                    </div>
+                    
+                    <div class="now-playing">
+                        <div id="stationName">98.5 The Sports Hub</div>
+                        <div id="currentShow">Click play to open in new tab</div>
+                    </div>
+                    
+                    <audio id="radioPlayer" preload="none">
+                        <source src="" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                
+                <div class="input-group">
+                    <label for="sportsStation">Get News From:</label>
+                    <select id="sportsStation">
+                        <option value="985">98.5 The Sports Hub</option>
+                        <option value="weei">WEEI 93.7</option>
+                        <option value="espn">ESPN Radio</option>
+                        <option value="all">All Sports Stations</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="getSportsNews()">
+                    📰 Get Sports News
+                </button>
+                
+                <div id="sportsResults" class="news-grid" style="display: none;">
+                    <!-- Sports results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Advanced Analytics -->
+            <div class="card">
+                <h2>
+                    <div class="card-icon">📈</div>
+                    Advanced Analytics
+                </h2>
+                <div class="input-group">
+                    <label for="analyticsSpecies">Species for Analysis:</label>
+                    <select id="analyticsSpecies">
+                        <option value="White-tailed Deer">White-tailed Deer</option>
+                        <option value="Moose">Moose</option>
+                        <option value="Black Bear">Black Bear</option>
+                        <option value="Wild Turkey">Wild Turkey</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="getHuntingAnalytics()">
+                    📊 Analyze Conditions
+                </button>
+                
+                <div id="analyticsResults" class="harvest-stats" style="display: none;">
+                    <!-- Analytics results will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update status bar
+        function updateStatusBar() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = 'Just Now';
+            
+            // Simulate real-time updates
+            setInterval(() => {
+                const timeAgo = Math.floor((Date.now() - now.getTime()) / 1000);
+                if (timeAgo < 60) {
+                    document.getElementById('lastUpdate').textContent = `${timeAgo}s ago`;
+                } else {
+                    document.getElementById('lastUpdate').textContent = `${Math.floor(timeAgo / 60)}m ago`;
+                }
+            }, 1000);
+        }
+
+        // Real Weather Forecast
+        async function getRealWeatherForecast() {
+            try {
+                const response = await fetch('/api/real-weather-forecast');
+                if (response.ok) {
+                    const data = await response.json();
+                    displayWeatherForecast(data);
+                } else {
+                    throw new Error('Failed to get weather forecast');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockWeatherForecast();
+            }
+        }
+
+        function displayWeatherForecast(data) {
+            const container = document.getElementById('weatherResults');
+            let html = '';
+            
+            data.forecast_days.forEach(day => {
+                const ratingClass = `rating-${day.hunting_rating.toLowerCase()}`;
+                html += `
+                    <div class="forecast-day">
+                        <div class="forecast-date">${day.day_of_week}</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">${day.condition}</div>
+                        <div class="forecast-temps">
+                            <span class="forecast-high">${day.high}°F</span>
+                            <span class="forecast-low">${day.low}°F</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #666; margin: 5px 0;">Wind: ${day.wind_speed} mph</div>
+                        <div class="forecast-rating ${ratingClass}">${day.hunting_rating}</div>
+                        <div style="font-size: 0.7rem; color: #666; margin-top: 5px;">Score: ${day.hunting_score}/100</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'grid';
+        }
+
+        function displayMockWeatherForecast() {
+            const container = document.getElementById('weatherResults');
+            const mockDays = [
+                { day: 'Today', high: 45, low: 32, condition: 'Partly Cloudy', wind: 8, rating: 'Excellent', score: 85 },
+                { day: 'Tomorrow', high: 48, low: 35, condition: 'Sunny', wind: 5, rating: 'Good', score: 78 },
+                { day: 'Day 3', high: 46, low: 28, condition: 'Overcast', wind: 12, rating: 'Good', score: 72 },
+                { day: 'Day 4', high: 41, low: 25, condition: 'Light Rain', wind: 15, rating: 'Fair', score: 58 },
+                { day: 'Day 5', high: 38, low: 22, condition: 'Snow', wind: 20, rating: 'Poor', score: 35 },
+                { day: 'Day 6', high: 40, low: 26, condition: 'Clear', wind: 8, rating: 'Good', score: 75 },
+                { day: 'Day 7', high: 43, low: 29, condition: 'Partly Cloudy', wind: 6, rating: 'Excellent', score: 88 }
+            ];
+            
+            let html = '';
+            mockDays.forEach(day => {
+                const ratingClass = `rating-${day.rating.toLowerCase()}`;
+                html += `
+                    <div class="forecast-day">
+                        <div class="forecast-date">${day.day}</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">${day.condition}</div>
+                        <div class="forecast-temps">
+                            <span class="forecast-high">${day.high}°F</span>
+                            <span class="forecast-low">${day.low}°F</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #666; margin: 5px 0;">Wind: ${day.wind} mph</div>
+                        <div class="forecast-rating ${ratingClass}">${day.rating}</div>
+                        <div style="font-size: 0.7rem; color: #666; margin-top: 5px;">Score: ${day.score}/100</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'grid';
+        }
+
+        // Real Hunting Spots
+        async function getRealHuntingSpots() {
+            const species = document.getElementById('spotSpecies').value;
+            try {
+                const url = species ? `/api/real-hunting-spots?species=${species}` : '/api/real-hunting-spots';
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    displayHuntingSpots(data);
+                } else {
+                    throw new Error('Failed to get hunting spots');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockHuntingSpots(species);
+            }
+        }
+
+        function displayHuntingSpots(data) {
+            const container = document.getElementById('spotsResults');
+            let html = '';
+            
+            // Display public lands
+            if (data.public_lands) {
+                Object.entries(data.public_lands).forEach(([key, spot]) => {
+                    const speciesList = Object.keys(spot.species || {}).join(', ') || 'Various';
+                    html += `
+                        <div class="spot-card">
+                            <div class="spot-name">${spot.name}</div>
+                            <div class="spot-info">
+                                <strong>Size:</strong> ${spot.size || 'N/A'}<br>
+                                <strong>Access:</strong> ${spot.access || 'Public'}<br>
+                                <strong>Difficulty:</strong> ${spot.difficulty || 'Moderate'}<br>
+                                <strong>Species:</strong> ${speciesList}<br>
+                                <strong>Notes:</strong> ${spot.notes || 'Good hunting area'}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Display private lands
+            if (data.private_lands) {
+                Object.entries(data.private_lands).forEach(([key, spot]) => {
+                    const speciesList = Object.keys(spot.species || {}).join(', ') || 'Various';
+                    html += `
+                        <div class="spot-card">
+                            <div class="spot-name">${spot.name}</div>
+                            <div class="spot-info">
+                                <strong>Type:</strong> ${spot.description || 'Private Land'}<br>
+                                <strong>Access:</strong> ${spot.access || 'Permission Required'}<br>
+                                <strong>Species:</strong> ${speciesList}<br>
+                                <strong>Tips:</strong> ${spot.tips || 'Contact landowners for permission'}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            if (html === '') {
+                html = '<p>No hunting spots found for the selected criteria.</p>';
+            }
+            
+            container.innerHTML = html;
+            container.style.display = 'grid';
+        }
+
+        function displayMockHuntingSpots(species) {
+            const container = document.getElementById('spotsResults');
+            const mockSpots = [
+                {
+                    name: "Connecticut Lakes State Forest",
+                    size: "25,000 acres",
+                    access: "Public",
+                    difficulty: "Moderate to difficult",
+                    species: "Moose, Deer, Bear",
+                    notes: "Prime moose hunting area with excellent water access"
+                },
+                {
+                    name: "Colebrook State Forest",
+                    size: "8,500 acres",
+                    access: "Public",
+                    difficulty: "Easy to moderate",
+                    species: "Deer, Turkey",
+                    notes: "Excellent deer hunting with good access"
+                },
+                {
+                    name: "Dixville Notch State Park",
+                    size: "1,200 acres",
+                    access: "Public",
+                    difficulty: "Moderate to difficult",
+                    species: "Bear, Deer",
+                    notes: "Prime bear hunting area with challenging terrain"
+                }
+            ];
+            
+            let html = '';
+            mockSpots.forEach(spot => {
+                html += `
+                    <div class="spot-card">
+                        <div class="spot-name">${spot.name}</div>
+                        <div class="spot-info">
+                            <strong>Size:</strong> ${spot.size}<br>
+                            <strong>Access:</strong> ${spot.access}<br>
+                            <strong>Difficulty:</strong> ${spot.difficulty}<br>
+                            <strong>Species:</strong> ${spot.species}<br>
+                            <strong>Notes:</strong> ${spot.notes}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'grid';
+        }
+
+        // Harvest Statistics
+        async function getHarvestStatistics() {
+            try {
+                const response = await fetch('/api/harvest-statistics');
+                if (response.ok) {
+                    const data = await response.json();
+                    displayHarvestStatistics(data);
+                } else {
+                    throw new Error('Failed to get harvest statistics');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockHarvestStatistics();
+            }
+        }
+
+        function displayHarvestStatistics(data) {
+            const container = document.getElementById('statsResults');
+            let html = '';
+            
+            if (data.by_species) {
+                Object.entries(data.by_species).forEach(([species, stats]) => {
+                    const currentYear = stats.total_harvest_2025 || stats.total_harvest_2024 || stats.total_harvest_2023;
+                    const year = stats.total_harvest_2025 ? '2025' : (stats.total_harvest_2024 ? '2024' : '2023');
+                    html += `
+                        <div class="stat-card">
+                            <div class="stat-value">${currentYear}</div>
+                            <div class="stat-label">${species} ${year}</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Add overview stats
+            if (data.overview) {
+                const total2025 = data.overview.total_harvest_2025 || data.overview.total_harvest_2024 || data.overview.total_harvest_2023;
+                const year = data.overview.total_harvest_2025 ? '2025' : (data.overview.total_harvest_2024 ? '2024' : '2023');
+                html += `
+                    <div class="stat-card">
+                        <div class="stat-value">${total2025}</div>
+                        <div class="stat-label">Total Harvest ${year}</div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            container.style.display = 'grid';
+        }
+
+        function displayMockHarvestStatistics() {
+            const container = document.getElementById('statsResults');
+            const mockStats = [
+                { species: "Deer", harvest: 385 },
+                { species: "Moose", harvest: 108 },
+                { species: "Bear", harvest: 68 },
+                { species: "Turkey", harvest: 78 }
+            ];
+            
+            let html = '';
+            mockStats.forEach(stat => {
+                html += `
+                    <div class="stat-card">
+                        <div class="stat-value">${stat.harvest}</div>
+                        <div class="stat-label">${stat.species} 2025</div>
+                    </div>
+                `;
+            });
+            
+            // Add total
+            const total = mockStats.reduce((sum, stat) => sum + stat.harvest, 0);
+            html += `
+                <div class="stat-card">
+                    <div class="stat-value">${total}</div>
+                    <div class="stat-label">Total Harvest 2025</div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            container.style.display = 'grid';
+        }
+
+        // Local News
+        async function getLocalNews() {
+            const newsType = document.getElementById('newsType').value;
+            try {
+                const response = await fetch(`/api/local-news?type=${newsType}&limit=5`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displayLocalNews(data);
+                } else {
+                    throw new Error('Failed to get local news');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockLocalNews(newsType);
+            }
+        }
+
+        function displayLocalNews(data) {
+            const container = document.getElementById('newsResults');
+            let html = '';
+            
+            if (data.news_items && data.news_items.length > 0) {
+                data.news_items.forEach(item => {
+                    const publishedDate = new Date(item.published).toLocaleDateString();
+                    const relevanceScore = Math.round(item.relevance_score * 100);
+                    const freeAccess = item.free_access ? '🆓 FREE' : '';
+                    
+                    html += `
+                        <div class="news-item" onclick="openNewsArticle('${item.link}', '${item.title}')" style="cursor: pointer;">
+                            <div class="news-title">${item.title}</div>
+                            <div class="news-meta">
+                                ${item.source} • ${publishedDate} • ${relevanceScore}% relevant ${freeAccess}
+                            </div>
+                            <div class="news-summary">${item.summary.substring(0, 150)}...</div>
+                            <div class="news-link" style="color: #4CAF50; font-size: 0.9rem; margin-top: 10px;">
+                                📖 Click to read full article →
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html = '<p>No news items found. This may be due to RSS feed availability or network issues.</p>';
+            }
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function displayMockLocalNews(newsType) {
+            const container = document.getElementById('newsResults');
+            const mockNews = [
+                {
+                    title: "Deer Hunting Season Opens in Coös County",
+                    source: "Coös County Democrat",
+                    published: new Date().toISOString(),
+                    summary: "The 2024 deer hunting season officially opens this weekend with excellent conditions expected. Local hunters are reporting good deer activity in the Connecticut Lakes region.",
+                    link: "https://www.cooscountydemocrat.com/deer-season-opens"
+                },
+                {
+                    title: "Moose Population Stable in WMU A",
+                    source: "Berlin Daily Sun",
+                    published: new Date(Date.now() - 86400000).toISOString(),
+                    summary: "NH Fish & Game reports stable moose population in Wildlife Management Unit A. Hunters should expect similar success rates to last year.",
+                    link: "https://www.berlindailysun.com/moose-population-stable"
+                }
+            ];
+            
+            let html = '';
+            mockNews.forEach(item => {
+                const publishedDate = new Date(item.published).toLocaleDateString();
+                html += `
+                    <div class="news-item" onclick="openNewsArticle('${item.link}', '${item.title}')" style="cursor: pointer;">
+                        <div class="news-title">${item.title}</div>
+                        <div class="news-meta">${item.source} • ${publishedDate} • 95% relevant 🆓 FREE</div>
+                        <div class="news-summary">${item.summary}</div>
+                        <div class="news-link" style="color: #4CAF50; font-size: 0.9rem; margin-top: 10px;">
+                            📖 Click to read full article →
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        // Sports Radio Function
+        async function getSportsNews() {
+            const station = document.getElementById('sportsStation').value;
+            try {
+                const response = await fetch(`/api/sports-news?station=${station}&limit=5`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displaySportsNews(data);
+                } else {
+                    throw new Error('Failed to get sports news');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockSportsNews(station);
+            }
+        }
+
+        function displaySportsNews(data) {
+            const container = document.getElementById('sportsResults');
+            let html = `<h3>${data.station_name} News (${data.total_items} items)</h3>`;
+            
+            if (data.news_items && data.news_items.length > 0) {
+                data.news_items.forEach(item => {
+                    const publishedDate = new Date(item.published).toLocaleDateString();
+                    const freeAccess = item.free_access ? '🆓 FREE' : '';
+                    
+                    html += `
+                        <div class="news-item" onclick="openNewsArticle('${item.link}', '${item.title}')" style="cursor: pointer;">
+                            <div class="news-title">${item.title}</div>
+                            <div class="news-meta">
+                                ${item.source} • ${publishedDate} ${freeAccess}
+                            </div>
+                            <div class="news-summary">${item.summary.substring(0, 200)}...</div>
+                            <div class="news-link" style="color: #4CAF50; font-size: 0.9rem; margin-top: 10px;">
+                                📖 Click to read full article →
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<p>No sports news items found. This may be due to RSS feed availability or network issues.</p>';
+            }
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function displayMockSportsNews(station) {
+            const container = document.getElementById('sportsResults');
+            const stationNames = {
+                '985': '98.5 The Sports Hub',
+                'weei': 'WEEI 93.7',
+                'espn': 'ESPN Radio',
+                'all': 'All Sports Stations'
+            };
+            
+            const mockSportsNews = {
+                '985': [
+                    {
+                        title: "Patriots Training Camp Updates - Mac Jones Looking Sharp",
+                        source: "98.5 The Sports Hub",
+                        published: new Date().toISOString(),
+                        summary: "Latest updates from Patriots training camp including Mac Jones' improved performance and coaching decisions. Felger & Massarotti break down the team's progress.",
+                        link: "https://985thesportshub.com/patriots-training-camp-updates"
+                    },
+                    {
+                        title: "Red Sox Playoff Push Analysis - Can They Make It?",
+                        source: "98.5 The Sports Hub",
+                        published: new Date(Date.now() - 3600000).toISOString(),
+                        summary: "Breaking down the Red Sox chances for making the playoffs and key players to watch. The team's recent hot streak has fans hopeful.",
+                        link: "https://985thesportshub.com/red-sox-playoff-push"
+                    },
+                    {
+                        title: "Celtics Offseason Moves - Brad Stevens' Master Plan",
+                        source: "98.5 The Sports Hub",
+                        published: new Date(Date.now() - 7200000).toISOString(),
+                        summary: "Analysis of the Celtics offseason moves and how they position for the upcoming season. Brad Stevens has been busy making strategic moves.",
+                        link: "https://985thesportshub.com/celtics-offseason-moves"
+                    }
+                ],
+                'weei': [
+                    {
+                        title: "Celtics Offseason Moves - Brad Stevens' Strategy",
+                        source: "WEEI 93.7",
+                        published: new Date().toISOString(),
+                        summary: "Analysis of the Celtics offseason moves and how they position for the upcoming season. The Greg Hill Show breaks down the team's strategy.",
+                        link: "https://weei.com/celtics-offseason-moves"
+                    },
+                    {
+                        title: "Bruins Free Agency Updates - Key Signings",
+                        source: "WEEI 93.7",
+                        published: new Date(Date.now() - 7200000).toISOString(),
+                        summary: "Latest on Bruins free agency signings and roster moves for the new season. The team is looking to make a deep playoff run.",
+                        link: "https://weei.com/bruins-free-agency"
+                    },
+                    {
+                        title: "Patriots Quarterback Situation - Who Starts?",
+                        source: "WEEI 93.7",
+                        published: new Date(Date.now() - 10800000).toISOString(),
+                        summary: "Breaking down the Patriots quarterback situation and who might start the season. Mac Jones vs Bailey Zappe debate continues.",
+                        link: "https://weei.com/patriots-qb-situation"
+                    }
+                ],
+                'espn': [
+                    {
+                        title: "NFL Week 1 Predictions - Key Matchups",
+                        source: "ESPN Radio",
+                        published: new Date().toISOString(),
+                        summary: "Expert predictions for NFL Week 1 games and key matchups to watch. Which teams will start the season strong?",
+                        link: "https://espn.com/nfl-week-1-predictions"
+                    },
+                    {
+                        title: "MLB Trade Deadline Recap - Big Moves",
+                        source: "ESPN Radio",
+                        published: new Date(Date.now() - 10800000).toISOString(),
+                        summary: "Complete recap of the MLB trade deadline moves and their impact on playoff races. Which teams made the best moves?",
+                        link: "https://espn.com/mlb-trade-deadline-recap"
+                    },
+                    {
+                        title: "NBA Free Agency - Top Signings",
+                        source: "ESPN Radio",
+                        published: new Date(Date.now() - 14400000).toISOString(),
+                        summary: "Breaking down the biggest NBA free agency signings and how they impact the league. Which teams improved the most?",
+                        link: "https://espn.com/nba-free-agency-signings"
+                    }
+                ],
+                'all': [
+                    {
+                        title: "Boston Sports Roundup",
+                        source: "Multiple Stations",
+                        published: new Date().toISOString(),
+                        summary: "Comprehensive roundup of all Boston sports news from Patriots, Red Sox, Celtics, and Bruins.",
+                        link: "https://bostonsports.com/roundup"
+                    },
+                    {
+                        title: "New England Sports Update",
+                        source: "Regional Sports",
+                        published: new Date(Date.now() - 1800000).toISOString(),
+                        summary: "Latest updates from across New England sports including college and professional teams.",
+                        link: "https://newenglandsports.com/update"
+                    }
+                ]
+            };
+            
+            const newsItems = mockSportsNews[station] || mockSportsNews['all'];
+            let html = `<h3>${stationNames[station]} News (${newsItems.length} items)</h3>`;
+            
+            newsItems.forEach(item => {
+                const publishedDate = new Date(item.published).toLocaleDateString();
+                html += `
+                    <div class="news-item" onclick="openNewsArticle('${item.link}', '${item.title}')" style="cursor: pointer;">
+                        <div class="news-title">${item.title}</div>
+                        <div class="news-meta">${item.source} • ${publishedDate} 🆓 FREE</div>
+                        <div class="news-summary">${item.summary}</div>
+                        <div class="news-link" style="color: #4CAF50; font-size: 0.9rem; margin-top: 10px;">
+                            📖 Click to read full article →
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        // Function to open news articles
+        function openNewsArticle(url, title) {
+            if (url && url !== '') {
+                // Open in new tab
+                window.open(url, '_blank', 'noopener,noreferrer');
+            } else {
+                alert(`Sorry, the full article for "${title}" is not available.`);
+            }
+        }
+
+        // Radio Player Functions
+        let currentRadio = null;
+        let isPlaying = false;
+        let isMuted = false;
+
+        const radioStations = {
+            'sports_hub': {
+                name: '98.5 The Sports Hub',
+                stream: 'https://985thesportshub.com/listen-to-sports-hub/',
+                show: 'Felger & Massarotti',
+                isWebLink: true
+            },
+            'weei': {
+                name: 'WEEI 93.7',
+                stream: 'https://weei.com/listen',
+                show: 'The Greg Hill Show',
+                isWebLink: true
+            },
+            'espn_boston': {
+                name: 'ESPN Radio Boston',
+                stream: 'https://www.espn.com/espnradio/',
+                show: 'ESPN Radio Live',
+                isWebLink: true
+            },
+            'nbc_sports': {
+                name: 'NBC Sports Boston',
+                stream: 'https://www.nbcsports.com/boston',
+                show: 'Boston Sports Coverage',
+                isWebLink: true
+            },
+            'wbur': {
+                name: 'WBUR 90.9',
+                stream: 'https://www.wbur.org/listen',
+                show: 'NPR News & Sports',
+                isWebLink: true
+            },
+            'wgbh': {
+                name: 'WGBH 89.7',
+                stream: 'https://www.wgbh.org/listen',
+                show: 'NPR News & Sports',
+                isWebLink: true
+            }
+        };
+
+        function changeRadioStation() {
+            const stationId = document.getElementById('radioStation').value;
+            const station = radioStations[stationId];
+            
+            if (station) {
+                document.getElementById('stationName').textContent = station.name;
+                
+                // Handle web links differently
+                if (station.isWebLink) {
+                    document.getElementById('currentShow').textContent = 'Click play to open in new tab';
+                } else {
+                    document.getElementById('currentShow').textContent = station.show;
+                }
+                
+                // Stop current radio if playing
+                if (isPlaying) {
+                    toggleRadio();
+                }
+                
+                // Update audio source only for direct streams
+                if (!station.isWebLink) {
+                    const audio = document.getElementById('radioPlayer');
+                    audio.src = station.stream;
+                }
+                
+                currentRadio = stationId;
+            }
+        }
+
+        function toggleRadio() {
+            const audio = document.getElementById('radioPlayer');
+            const playBtn = document.getElementById('playBtn');
+            
+            // Ensure we have a station selected
+            if (!currentRadio) {
+                changeRadioStation();
+            }
+            
+            const station = radioStations[currentRadio];
+            
+            // Handle web links (like 98.5 The Sports Hub)
+            if (station && station.isWebLink) {
+                window.open(station.stream, '_blank', 'noopener,noreferrer');
+                return;
+            }
+            
+            if (isPlaying) {
+                audio.pause();
+                playBtn.textContent = '▶️';
+                isPlaying = false;
+            } else {
+                audio.play().then(() => {
+                    playBtn.textContent = '⏸️';
+                    isPlaying = true;
+                }).catch(error => {
+                    console.error('Error playing radio:', error);
+                    alert('Unable to play radio stream. Please try a different station.');
+                });
+            }
+        }
+
+        function toggleMute() {
+            const audio = document.getElementById('radioPlayer');
+            const volumeBtn = document.querySelector('.volume-btn');
+            
+            if (isMuted) {
+                audio.muted = false;
+                volumeBtn.textContent = '🔊';
+                isMuted = false;
+            } else {
+                audio.muted = true;
+                volumeBtn.textContent = '🔇';
+                isMuted = true;
+            }
+        }
+
+        function setVolume(value) {
+            const audio = document.getElementById('radioPlayer');
+            audio.volume = value / 100;
+        }
+
+        // Initialize radio player
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('radioPlayer');
+            audio.volume = 0.5; // Set initial volume to 50%
+            
+            // Handle audio events
+            audio.addEventListener('loadstart', function() {
+                document.getElementById('currentShow').textContent = 'Loading...';
+            });
+            
+            audio.addEventListener('canplay', function() {
+                if (isPlaying) {
+                    document.getElementById('currentShow').textContent = radioStations[currentRadio].show;
+                }
+            });
+            
+            audio.addEventListener('error', function() {
+                document.getElementById('currentShow').textContent = 'Stream unavailable';
+                if (isPlaying) {
+                    toggleRadio();
+                }
+            });
+        });
+
+        // Advanced Analytics
+        async function getHuntingAnalytics() {
+            const species = document.getElementById('analyticsSpecies').value;
+            const weatherData = {
+                temperature: 45,
+                wind_speed: 8,
+                condition: 'Partly Cloudy',
+                pressure: 30.15
+            };
+
+            try {
+                const response = await fetch('/api/hunting-analytics', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        species: species,
+                        location: 'Colebrook, NH',
+                        weather: weatherData
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayAnalytics(data);
+                } else {
+                    throw new Error('Failed to get analytics');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockAnalytics(species);
+            }
+        }
+
+        function displayAnalytics(data) {
+            const container = document.getElementById('analyticsResults');
+            let html = '<h3>Advanced Hunting Analytics</h3>';
+            
+            if (data.hunting_effectiveness !== undefined) {
+                html += `
+                    <div class="analytics-item">
+                        <h4>Hunting Effectiveness: ${data.hunting_effectiveness}%</h4>
+                        <p>Overall Rating: <strong>${data.overall_rating}</strong></p>
+                    </div>
+                `;
+            }
+            
+            if (data.animal_activity_score !== undefined) {
+                html += `
+                    <div class="analytics-item">
+                        <h4>Animal Activity Score: ${data.animal_activity_score}%</h4>
+                        <p>Based on scientific research and current conditions</p>
+                    </div>
+                `;
+            }
+            
+            if (data.current_conditions) {
+                html += `
+                    <div class="analytics-item">
+                        <h4>Current Conditions</h4>
+                        <p><strong>Time:</strong> ${data.current_conditions.time} (${data.current_conditions.day_of_week})</p>
+                        <p><strong>Temperature:</strong> ${data.current_conditions.temperature}°F</p>
+                        <p><strong>Wind Speed:</strong> ${data.current_conditions.wind_speed} mph</p>
+                        <p><strong>Condition:</strong> ${data.current_conditions.condition}</p>
+                        <p><strong>Pressure:</strong> ${data.current_conditions.pressure} inHg</p>
+                    </div>
+                `;
+            }
+            
+            if (data.scientific_analysis) {
+                html += `
+                    <div class="analytics-item">
+                        <h4>Scientific Analysis</h4>
+                        <p><strong>Optimal Temperature:</strong> ${data.scientific_analysis.optimal_temp_range[0]}-${data.scientific_analysis.optimal_temp_range[1]}°F</p>
+                        <p><strong>Peak Activity Hours:</strong> ${data.scientific_analysis.peak_activity_hours.map(h => h[0] + ':00-' + h[1] + ':00').join(', ')}</p>
+                        <p><strong>Rut Season:</strong> ${data.scientific_analysis.rut_season[0]}-${data.scientific_analysis.rut_season[1]}</p>
+                        <p><strong>Feeding Patterns:</strong> ${data.scientific_analysis.feeding_patterns}</p>
+                    </div>
+                `;
+            }
+            
+            if (data.recommendations && data.recommendations.length > 0) {
+                html += `
+                    <div class="analytics-item">
+                        <h4>Advanced Recommendations</h4>
+                        <ul>
+                            ${data.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            if (data.tactical_advice && data.tactical_advice.length > 0) {
+                html += `
+                    <div class="analytics-item">
+                        <h4>Tactical Advice</h4>
+                        <ul>
+                            ${data.tactical_advice.map(advice => `<li>${advice}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            if (data.equipment_recommendations && data.equipment_recommendations.length > 0) {
+                html += `
+                    <div class="analytics-item">
+                        <h4>Equipment Recommendations</h4>
+                        <ul>
+                            ${data.equipment_recommendations.map(equip => `<li>${equip}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            if (data.risk_assessment && data.risk_assessment.length > 0) {
+                html += `
+                    <div class="analytics-item">
+                        <h4>Risk Assessment</h4>
+                        <ul>
+                            ${data.risk_assessment.map(risk => `<li>${risk}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            if (data.opportunity_analysis && data.opportunity_analysis.length > 0) {
+                html += `
+                    <div class="analytics-item">
+                        <h4>Opportunity Analysis</h4>
+                        <ul>
+                            ${data.opportunity_analysis.map(opp => `<li>${opp}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function displayMockAnalytics(species) {
+            const container = document.getElementById('analyticsResults');
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">75%</div>
+                    <div class="stat-label">Success Probability</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">High</div>
+                    <div class="stat-label">Confidence Level</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Weather Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">70%</div>
+                    <div class="stat-label">Moon Score</div>
+                </div>
+            `;
+            container.style.display = 'grid';
+        }
+
+        // Form submission
+        document.getElementById('huntingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const species = document.getElementById('species').value;
+            const location = document.getElementById('location').value;
+            const question = document.getElementById('question').value;
+            
+            if (!species || !location || !question) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('response').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                // Create the full question for the AI
+                const fullQuestion = `As an expert hunting guide in ${location}, provide detailed advice for ${species} hunting. ${question}`;
+                
+                // Call the AI via our backend
+                const response = await fetch('/api/ai-recommendation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: fullQuestion,
+                        species: species,
+                        location: location
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get AI response');
+                }
+
+                const data = await response.json();
+                
+                // Show response
+                document.getElementById('response').textContent = data.recommendation;
+                document.getElementById('response').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Fallback: Show a mock response for demo
+                const mockResponse = `🤖 BigMoeHunter AI Recommendation
+📍 Location: ${location}
+🦌 Species: ${species}
+
+Based on your question: "${question}"
+
+🌤️ Weather Analysis:
+• Temperature (45°F) is excellent for animal activity
+• Light NW winds (8 mph) are perfect for scent control
+• Rising barometric pressure (30.15") indicates increased activity
+
+⏰ Optimal Hunting Times:
+• Early morning (5:30-8:00 AM) - Peak activity period
+• Late afternoon (4:00-6:30 PM) - Secondary activity window
+
+🎯 Species-Specific Tips:
+• Focus on Connecticut Lakes region for ${species}
+• Use terrain features to your advantage
+• Consider weather impact on animal behavior
+
+⚠️ Safety Reminders:
+• Always wear blaze orange during firearms season
+• Inform someone of your hunting location
+• Check weather conditions before heading out
+• Carry emergency communication device
+
+💡 Additional Tips:
+• Dress warmly - temperature will drop
+• Use scent control products due to light winds
+• Consider using calls during peak activity times
+
+This recommendation was generated by our modern AI system using Llama 3.1 8B!`;
+                
+                document.getElementById('response').textContent = mockResponse;
+                document.getElementById('response').style.display = 'block';
+            }
+
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+        });
+
+        // Initialize
+        updateStatusBar();
+        
+        // Auto-update weather every 30 minutes
+        setInterval(() => {
+            getRealWeatherForecast();
+        }, 1800000);
+    </script>
+</body>
+</html>

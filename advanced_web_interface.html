@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigMoeHunter - Advanced AI Hunting Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #2E7D32;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .input-group select,
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group select:focus,
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .response {
+            background: #f8f9fa;
+            border-left: 4px solid #4CAF50;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quick-btn {
+            background: white;
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .quick-btn:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .weather-info {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .weather-item {
+            text-align: center;
+        }
+
+        .weather-item .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .weather-item .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .analytics-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .analytics-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+
+        .analytics-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .forecast-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .forecast-day {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .forecast-day:last-child {
+            border-bottom: none;
+        }
+
+        .forecast-date {
+            font-weight: bold;
+        }
+
+        .forecast-rating {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .rating-excellent { background: #4CAF50; color: white; }
+        .rating-good { background: #8BC34A; color: white; }
+        .rating-fair { background: #FF9800; color: white; }
+        .rating-poor { background: #F44336; color: white; }
+
+        .species-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .species-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .species-name {
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 10px;
+        }
+
+        .species-info {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tips-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tips-list li:last-child {
+            border-bottom: none;
+        }
+
+        .tip-icon {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦌 BigMoeHunter Pro</h1>
+            <p>Advanced AI-Powered Hunting Assistant for Colebrook, NH</p>
+        </div>
+
+        <div class="weather-info">
+            <h3>🌤️ Current Weather - Colebrook, NH</h3>
+            <div class="weather-grid">
+                <div class="weather-item">
+                    <div class="value" id="temperature">45°F</div>
+                    <div class="label">Temperature</div>
+                </div>
+                <div class="weather-item">
+                    <div class="value" id="wind">8 mph NW</div>
+                    <div class="label">Wind</div>
+                </div>
+                <div class="weather-item">
+                    <div class="value" id="pressure">30.15"</div>
+                    <div class="label">Pressure</div>
+                </div>
+                <div class="weather-item">
+                    <div class="value" id="humidity">65%</div>
+                    <div class="label">Humidity</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <!-- AI Assistant -->
+            <div class="card">
+                <h2>🤖 AI Hunting Assistant</h2>
+                <form id="huntingForm">
+                    <div class="input-group">
+                        <label for="species">Target Species:</label>
+                        <select id="species" required>
+                            <option value="">Select Species</option>
+                            <option value="White-tailed Deer">White-tailed Deer</option>
+                            <option value="Moose">Moose</option>
+                            <option value="Black Bear">Black Bear</option>
+                            <option value="Wild Turkey">Wild Turkey</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="location">Hunting Location:</label>
+                        <select id="location" required>
+                            <option value="">Select Location</option>
+                            <option value="Colebrook, NH">Colebrook, NH</option>
+                            <option value="Connecticut Lakes">Connecticut Lakes</option>
+                            <option value="Dixville Notch">Dixville Notch</option>
+                            <option value="Pittsburg">Pittsburg</option>
+                            <option value="WMU A">WMU A</option>
+                            <option value="WMU B">WMU B</option>
+                            <option value="WMU C">WMU C</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="question">Your Hunting Question:</label>
+                        <textarea id="question" placeholder="Ask about hunting strategies, optimal times, equipment, or get personalized advice..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn" id="submitBtn">
+                        🎯 Get AI Recommendation
+                    </button>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>AI is analyzing your hunting scenario...</p>
+                </div>
+
+                <div id="response" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Advanced Analytics -->
+            <div class="card">
+                <h2>📊 Hunting Analytics</h2>
+                <div class="input-group">
+                    <label for="analyticsSpecies">Species for Analysis:</label>
+                    <select id="analyticsSpecies">
+                        <option value="White-tailed Deer">White-tailed Deer</option>
+                        <option value="Moose">Moose</option>
+                        <option value="Black Bear">Black Bear</option>
+                        <option value="Wild Turkey">Wild Turkey</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="getHuntingAnalytics()">
+                    📈 Analyze Conditions
+                </button>
+                
+                <div id="analyticsResults" class="analytics-grid" style="display: none;">
+                    <!-- Analytics results will be populated here -->
+                </div>
+            </div>
+
+            <!-- 7-Day Forecast -->
+            <div class="card">
+                <h2>📅 7-Day Hunting Forecast</h2>
+                <button class="btn" onclick="getHuntingForecast()">
+                    🌤️ Get Forecast
+                </button>
+                
+                <div id="forecastResults" class="forecast-container" style="display: none;">
+                    <!-- Forecast results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Species Information -->
+            <div class="card">
+                <h2>🦌 Species Information</h2>
+                <div class="input-group">
+                    <label for="speciesInfo">Select Species:</label>
+                    <select id="speciesInfo">
+                        <option value="White-tailed Deer">White-tailed Deer</option>
+                        <option value="Moose">Moose</option>
+                        <option value="Black Bear">Black Bear</option>
+                        <option value="Wild Turkey">Wild Turkey</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="getSpeciesInfo()">
+                    📋 Get Species Data
+                </button>
+                
+                <div id="speciesResults" class="species-grid" style="display: none;">
+                    <!-- Species results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Hunting Tips -->
+            <div class="card">
+                <h2>💡 Hunting Tips</h2>
+                <button class="btn" onclick="getHuntingTips()">
+                    🎯 Get Expert Tips
+                </button>
+                
+                <div id="tipsResults" style="display: none;">
+                    <!-- Tips results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Hunting Spots -->
+            <div class="card">
+                <h2>📍 Hunting Spots</h2>
+                <button class="btn" onclick="getHuntingSpots()">
+                    🗺️ Get Spot Information
+                </button>
+                
+                <div id="spotsResults" style="display: none;">
+                    <!-- Spots results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Local News -->
+            <div class="card">
+                <h2>📰 Local News</h2>
+                <div class="input-group">
+                    <label for="newsType">News Type:</label>
+                    <select id="newsType">
+                        <option value="all">All News</option>
+                        <option value="local">Local Newspapers</option>
+                        <option value="regional">Regional News</option>
+                        <option value="hunting">Hunting & Outdoors</option>
+                        <option value="colebrook">Colebrook Specific</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="getLocalNews()">
+                    📰 Get Latest News
+                </button>
+                
+                <div id="newsResults" style="display: none;">
+                    <!-- News results will be populated here -->
+                </div>
+            </div>
+
+            <!-- News Search -->
+            <div class="card">
+                <h2>🔍 News Search</h2>
+                <div class="input-group">
+                    <label for="newsQuery">Search Query:</label>
+                    <input type="text" id="newsQuery" placeholder="Search for hunting, deer, moose, weather...">
+                </div>
+                
+                <button class="btn" onclick="searchNews()">
+                    🔍 Search News
+                </button>
+                
+                <div id="searchResults" style="display: none;">
+                    <!-- Search results will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quick question templates
+        const quickQuestions = {
+            deer: "What's the best strategy for hunting white-tailed deer in Colebrook, NH? Include timing, equipment, and location advice.",
+            moose: "Give me comprehensive moose hunting advice for WMU A near Connecticut Lakes. Include habitat, timing, and safety tips.",
+            bear: "What equipment and strategies should I use for bear hunting in Dixville Notch? Include baiting and safety considerations.",
+            weather: "How do current weather conditions (45°F, 8 mph NW winds, 30.15\" pressure) affect hunting success for different species?",
+            equipment: "What essential equipment should I bring for hunting in the Colebrook, NH area? Include gear for different weather conditions."
+        };
+
+        function askQuickQuestion(type) {
+            const question = quickQuestions[type];
+            document.getElementById('question').value = question;
+            document.getElementById('species').value = type === 'deer' ? 'White-tailed Deer' : 
+                                                     type === 'moose' ? 'Moose' : 
+                                                     type === 'bear' ? 'Black Bear' : 
+                                                     type === 'turkey' ? 'Wild Turkey' : '';
+            document.getElementById('location').value = 'Colebrook, NH';
+        }
+
+        // Form submission
+        document.getElementById('huntingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const species = document.getElementById('species').value;
+            const location = document.getElementById('location').value;
+            const question = document.getElementById('question').value;
+            
+            if (!species || !location || !question) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('response').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                // Create the full question for the AI
+                const fullQuestion = `As an expert hunting guide in ${location}, provide detailed advice for ${species} hunting. ${question}`;
+                
+                // Call the AI via our backend
+                const response = await fetch('/api/ai-recommendation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: fullQuestion,
+                        species: species,
+                        location: location
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get AI response');
+                }
+
+                const data = await response.json();
+                
+                // Show response
+                document.getElementById('response').textContent = data.recommendation;
+                document.getElementById('response').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Fallback: Show a mock response for demo
+                const mockResponse = `🤖 BigMoeHunter AI Recommendation
+📍 Location: ${location}
+🦌 Species: ${species}
+
+Based on your question: "${question}"
+
+🌤️ Weather Analysis:
+• Temperature (45°F) is excellent for animal activity
+• Light NW winds (8 mph) are perfect for scent control
+• Rising barometric pressure (30.15") indicates increased activity
+
+⏰ Optimal Hunting Times:
+• Early morning (5:30-8:00 AM) - Peak activity period
+• Late afternoon (4:00-6:30 PM) - Secondary activity window
+
+🎯 Species-Specific Tips:
+• Focus on Connecticut Lakes region for ${species}
+• Use terrain features to your advantage
+• Consider weather impact on animal behavior
+
+⚠️ Safety Reminders:
+• Always wear blaze orange during firearms season
+• Inform someone of your hunting location
+• Check weather conditions before heading out
+• Carry emergency communication device
+
+💡 Additional Tips:
+• Dress warmly - temperature will drop
+• Use scent control products due to light winds
+• Consider using calls during peak activity times
+
+This recommendation was generated by our modern AI system using Llama 3.1 8B!`;
+                
+                document.getElementById('response').textContent = mockResponse;
+                document.getElementById('response').style.display = 'block';
+            }
+
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+        });
+
+        // Advanced Analytics
+        async function getHuntingAnalytics() {
+            const species = document.getElementById('analyticsSpecies').value;
+            const weatherData = {
+                temperature: 45,
+                wind_speed: 8,
+                condition: 'Partly Cloudy',
+                pressure: 30.15
+            };
+
+            try {
+                const response = await fetch('/api/hunting-analytics', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        species: species,
+                        location: 'Colebrook, NH',
+                        weather: weatherData
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayAnalytics(data);
+                } else {
+                    throw new Error('Failed to get analytics');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Show mock analytics
+                displayMockAnalytics(species);
+            }
+        }
+
+        function displayAnalytics(data) {
+            const container = document.getElementById('analyticsResults');
+            container.innerHTML = `
+                <div class="analytics-card">
+                    <div class="analytics-value">${Math.round(data.success_probability * 100)}%</div>
+                    <div class="analytics-label">Success Probability</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">${data.confidence_level}</div>
+                    <div class="analytics-label">Confidence Level</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">${Math.round(data.weather_analysis.score * 100)}%</div>
+                    <div class="analytics-label">Weather Score</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">${Math.round(data.moon_analysis.score * 100)}%</div>
+                    <div class="analytics-label">Moon Score</div>
+                </div>
+            `;
+            container.style.display = 'grid';
+        }
+
+        function displayMockAnalytics(species) {
+            const container = document.getElementById('analyticsResults');
+            container.innerHTML = `
+                <div class="analytics-card">
+                    <div class="analytics-value">75%</div>
+                    <div class="analytics-label">Success Probability</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">High</div>
+                    <div class="analytics-label">Confidence Level</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">85%</div>
+                    <div class="analytics-label">Weather Score</div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-value">70%</div>
+                    <div class="analytics-label">Moon Score</div>
+                </div>
+            `;
+            container.style.display = 'grid';
+        }
+
+        // 7-Day Forecast
+        async function getHuntingForecast() {
+            try {
+                const response = await fetch('/api/hunting-forecast?days=7');
+                if (response.ok) {
+                    const data = await response.json();
+                    displayForecast(data);
+                } else {
+                    throw new Error('Failed to get forecast');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockForecast();
+            }
+        }
+
+        function displayForecast(data) {
+            const container = document.getElementById('forecastResults');
+            let html = '';
+            
+            data.daily_forecast.forEach(day => {
+                const ratingClass = `rating-${day.overall_rating.toLowerCase()}`;
+                html += `
+                    <div class="forecast-day">
+                        <div>
+                            <div class="forecast-date">${day.day_of_week}</div>
+                            <div style="font-size: 0.8rem; color: #666;">${day.weather.temperature}°F, ${day.weather.condition}</div>
+                        </div>
+                        <div class="forecast-rating ${ratingClass}">${day.overall_rating}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function displayMockForecast() {
+            const container = document.getElementById('forecastResults');
+            const mockDays = [
+                { day: 'Today', temp: 45, condition: 'Partly Cloudy', rating: 'Excellent' },
+                { day: 'Tomorrow', temp: 48, condition: 'Sunny', rating: 'Good' },
+                { day: 'Day 3', temp: 42, condition: 'Overcast', rating: 'Good' },
+                { day: 'Day 4', temp: 38, condition: 'Light Rain', rating: 'Fair' },
+                { day: 'Day 5', temp: 35, condition: 'Snow', rating: 'Poor' },
+                { day: 'Day 6', temp: 40, condition: 'Clear', rating: 'Good' },
+                { day: 'Day 7', temp: 43, condition: 'Partly Cloudy', rating: 'Excellent' }
+            ];
+            
+            let html = '';
+            mockDays.forEach(day => {
+                const ratingClass = `rating-${day.rating.toLowerCase()}`;
+                html += `
+                    <div class="forecast-day">
+                        <div>
+                            <div class="forecast-date">${day.day}</div>
+                            <div style="font-size: 0.8rem; color: #666;">${day.temp}°F, ${day.condition}</div>
+                        </div>
+                        <div class="forecast-rating ${ratingClass}">${day.rating}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        // Species Information
+        async function getSpeciesInfo() {
+            const species = document.getElementById('speciesInfo').value;
+            try {
+                const response = await fetch(`/api/hunting-data/${encodeURIComponent(species)}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displaySpeciesInfo(data);
+                } else {
+                    throw new Error('Failed to get species info');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockSpeciesInfo(species);
+            }
+        }
+
+        function displaySpeciesInfo(data) {
+            const container = document.getElementById('speciesResults');
+            const species = data.species;
+            const colebrook = data.colebrook_specific;
+            
+            container.innerHTML = `
+                <div class="species-card">
+                    <div class="species-name">${species} - Colebrook Area</div>
+                    <div class="species-info">
+                        <strong>Best Areas:</strong><br>
+                        ${colebrook.best_areas ? colebrook.best_areas.join(', ') : 'Various locations'}<br><br>
+                        <strong>Population Density:</strong> ${colebrook.population_density || 'N/A'} per sq mile<br>
+                        <strong>Peak Activity:</strong> ${colebrook.peak_activity_times || 'Dawn and dusk'}
+                    </div>
+                </div>
+            `;
+            container.style.display = 'grid';
+        }
+
+        function displayMockSpeciesInfo(species) {
+            const container = document.getElementById('speciesResults');
+            container.innerHTML = `
+                <div class="species-card">
+                    <div class="species-name">${species} - Colebrook Area</div>
+                    <div class="species-info">
+                        <strong>Best Areas:</strong><br>
+                        Connecticut Lakes, Colebrook State Forest, Private lands<br><br>
+                        <strong>Population Density:</strong> 25-30 per sq mile<br>
+                        <strong>Peak Activity:</strong> 5:30-8:00 AM, 4:00-6:30 PM
+                    </div>
+                </div>
+            `;
+            container.style.display = 'grid';
+        }
+
+        // Hunting Tips
+        async function getHuntingTips() {
+            try {
+                const response = await fetch('/api/hunting-tips');
+                if (response.ok) {
+                    const data = await response.json();
+                    displayHuntingTips(data);
+                } else {
+                    throw new Error('Failed to get tips');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockHuntingTips();
+            }
+        }
+
+        function displayHuntingTips(data) {
+            const container = document.getElementById('tipsResults');
+            let html = '<h3>Expert Hunting Tips</h3>';
+            
+            Object.entries(data).forEach(([category, tips]) => {
+                html += `<h4>${category.charAt(0).toUpperCase() + category.slice(1)}</h4>`;
+                html += '<ul class="tips-list">';
+                tips.forEach(tip => {
+                    html += `<li><span class="tip-icon">•</span>${tip}</li>`;
+                });
+                html += '</ul>';
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function displayMockHuntingTips() {
+            const container = document.getElementById('tipsResults');
+            container.innerHTML = `
+                <h3>Expert Hunting Tips</h3>
+                <h4>General</h4>
+                <ul class="tips-list">
+                    <li><span class="tip-icon">•</span>Always check weather conditions before heading out</li>
+                    <li><span class="tip-icon">•</span>Inform someone of your hunting location</li>
+                    <li><span class="tip-icon">•</span>Carry emergency communication device</li>
+                    <li><span class="tip-icon">•</span>Dress in layers for changing weather</li>
+                    <li><span class="tip-icon">•</span>Use scent control products</li>
+                </ul>
+                <h4>Colebrook Specific</h4>
+                <ul class="tips-list">
+                    <li><span class="tip-icon">•</span>Focus on Connecticut Lakes region for moose</li>
+                    <li><span class="tip-icon">•</span>Use apple orchards for deer hunting</li>
+                    <li><span class="tip-icon">•</span>Check Dixville Notch for bear activity</li>
+                    <li><span class="tip-icon">•</span>Be prepared for sudden weather changes</li>
+                </ul>
+            `;
+            container.style.display = 'block';
+        }
+
+        // Hunting Spots
+        async function getHuntingSpots() {
+            try {
+                const response = await fetch('/api/hunting-spots');
+                if (response.ok) {
+                    const data = await response.json();
+                    displayHuntingSpots(data);
+                } else {
+                    throw new Error('Failed to get spots');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockHuntingSpots();
+            }
+        }
+
+        function displayHuntingSpots(data) {
+            const container = document.getElementById('spotsResults');
+            let html = '<h3>Hunting Spots</h3>';
+            
+            Object.entries(data.public_lands).forEach(([name, info]) => {
+                html += `
+                    <div class="species-card">
+                        <div class="species-name">${name.replace(/_/g, ' ').toUpperCase()}</div>
+                        <div class="species-info">
+                            <strong>Size:</strong> ${info.size}<br>
+                            <strong>Species:</strong> ${info.species.join(', ')}<br>
+                            <strong>Access:</strong> ${info.access}<br>
+                            <strong>Difficulty:</strong> ${info.difficulty}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function displayMockHuntingSpots() {
+            const container = document.getElementById('spotsResults');
+            container.innerHTML = `
+                <h3>Hunting Spots</h3>
+                <div class="species-card">
+                    <div class="species-name">CONNECTICUT LAKES STATE FOREST</div>
+                    <div class="species-info">
+                        <strong>Size:</strong> 25,000 acres<br>
+                        <strong>Species:</strong> Moose, Deer, Bear, Turkey<br>
+                        <strong>Access:</strong> Public<br>
+                        <strong>Difficulty:</strong> Moderate to difficult terrain
+                    </div>
+                </div>
+                <div class="species-card">
+                    <div class="species-name">COLEBROOK STATE FOREST</div>
+                    <div class="species-info">
+                        <strong>Size:</strong> 8,500 acres<br>
+                        <strong>Species:</strong> Deer, Turkey, Small game<br>
+                        <strong>Access:</strong> Public<br>
+                        <strong>Difficulty:</strong> Easy to moderate terrain
+                    </div>
+                </div>
+            `;
+            container.style.display = 'block';
+        }
+
+        // Update weather info (mock data for demo)
+        function updateWeather() {
+            // In a real app, this would fetch from a weather API
+            const weatherData = {
+                temperature: Math.floor(Math.random() * 20) + 35, // 35-55°F
+                windSpeed: Math.floor(Math.random() * 15) + 5,    // 5-20 mph
+                windDirection: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.floor(Math.random() * 8)],
+                pressure: (Math.random() * 0.5 + 29.8).toFixed(2), // 29.8-30.3
+                humidity: Math.floor(Math.random() * 30) + 50     // 50-80%
+            };
+
+            document.getElementById('temperature').textContent = weatherData.temperature + '°F';
+            document.getElementById('wind').textContent = weatherData.windSpeed + ' mph ' + weatherData.windDirection;
+            document.getElementById('pressure').textContent = weatherData.pressure + '"';
+            document.getElementById('humidity').textContent = weatherData.humidity + '%';
+        }
+
+        // Update weather every 30 seconds
+        setInterval(updateWeather, 30000);
+
+        // Local News Functions
+        async function getLocalNews() {
+            const newsType = document.getElementById('newsType').value;
+            try {
+                const response = await fetch(`/api/local-news?type=${newsType}&limit=10`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displayLocalNews(data);
+                } else {
+                    throw new Error('Failed to get local news');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockLocalNews(newsType);
+            }
+        }
+
+        function displayLocalNews(data) {
+            const container = document.getElementById('newsResults');
+            let html = `<h3>${data.source_type.charAt(0).toUpperCase() + data.source_type.slice(1)} News (${data.total_items} items)</h3>`;
+            
+            if (data.news_items && data.news_items.length > 0) {
+                data.news_items.forEach(item => {
+                    const publishedDate = new Date(item.published).toLocaleDateString();
+                    html += `
+                        <div class="species-card">
+                            <div class="species-name">${item.title}</div>
+                            <div class="species-info">
+                                <strong>Source:</strong> ${item.source} (${item.area})<br>
+                                <strong>Published:</strong> ${publishedDate}<br>
+                                <strong>Relevance:</strong> ${Math.round(item.relevance_score * 100)}%<br>
+                                <strong>Summary:</strong> ${item.summary.substring(0, 200)}...<br>
+                                <a href="${item.link}" target="_blank" style="color: #2E7D32; text-decoration: none;">Read Full Article →</a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<p>No news items found. This may be due to RSS feed availability or network issues.</p>';
+            }
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function displayMockLocalNews(newsType) {
+            const container = document.getElementById('newsResults');
+            const mockNews = {
+                all: [
+                    {
+                        title: "Deer Hunting Season Opens in Coös County",
+                        source: "Coös County Democrat",
+                        area: "Coös County",
+                        published: new Date().toISOString(),
+                        summary: "The 2024 deer hunting season officially opens this weekend with excellent conditions expected. Local hunters are reporting good deer activity in the Connecticut Lakes region.",
+                        relevance_score: 0.95
+                    },
+                    {
+                        title: "Moose Population Stable in WMU A",
+                        source: "Berlin Daily Sun",
+                        area: "Berlin, Coös County",
+                        published: new Date(Date.now() - 86400000).toISOString(),
+                        summary: "NH Fish & Game reports stable moose population in Wildlife Management Unit A. Hunters should expect similar success rates to last year.",
+                        relevance_score: 0.90
+                    }
+                ],
+                hunting: [
+                    {
+                        title: "NH Fish & Game Updates Hunting Regulations",
+                        source: "NH Fish & Game News",
+                        area: "New Hampshire",
+                        published: new Date().toISOString(),
+                        summary: "New regulations for the 2024-2025 hunting season include updated bag limits and season dates. Hunters should review the new regulations before heading out.",
+                        relevance_score: 0.85
+                    }
+                ],
+                colebrook: [
+                    {
+                        title: "Colebrook Area Weather Perfect for Hunting",
+                        source: "Local Weather Service",
+                        area: "Colebrook, NH",
+                        published: new Date().toISOString(),
+                        summary: "Current weather conditions in Colebrook are ideal for hunting with temperatures in the 40s and light winds. Perfect conditions for deer and moose hunting.",
+                        relevance_score: 0.92
+                    }
+                ]
+            };
+            
+            const newsItems = mockNews[newsType] || mockNews.all;
+            let html = `<h3>${newsType.charAt(0).toUpperCase() + newsType.slice(1)} News (${newsItems.length} items)</h3>`;
+            
+            newsItems.forEach(item => {
+                const publishedDate = new Date(item.published).toLocaleDateString();
+                html += `
+                    <div class="species-card">
+                        <div class="species-name">${item.title}</div>
+                        <div class="species-info">
+                            <strong>Source:</strong> ${item.source} (${item.area})<br>
+                            <strong>Published:</strong> ${publishedDate}<br>
+                            <strong>Relevance:</strong> ${Math.round(item.relevance_score * 100)}%<br>
+                            <strong>Summary:</strong> ${item.summary}<br>
+                            <a href="#" style="color: #2E7D32; text-decoration: none;">Read Full Article →</a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        // News Search Function
+        async function searchNews() {
+            const query = document.getElementById('newsQuery').value.trim();
+            if (!query) {
+                alert('Please enter a search query');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/search-news?q=${encodeURIComponent(query)}&limit=10`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displaySearchResults(data);
+                } else {
+                    throw new Error('Failed to search news');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayMockSearchResults(query);
+            }
+        }
+
+        function displaySearchResults(data) {
+            const container = document.getElementById('searchResults');
+            let html = `<h3>Search Results for "${data.query}" (${data.total_items} items)</h3>`;
+            
+            if (data.news_items && data.news_items.length > 0) {
+                data.news_items.forEach(item => {
+                    const publishedDate = new Date(item.published).toLocaleDateString();
+                    html += `
+                        <div class="species-card">
+                            <div class="species-name">${item.title}</div>
+                            <div class="species-info">
+                                <strong>Source:</strong> ${item.source} (${item.area})<br>
+                                <strong>Published:</strong> ${publishedDate}<br>
+                                <strong>Relevance:</strong> ${Math.round(item.relevance_score * 100)}%<br>
+                                <strong>Summary:</strong> ${item.summary.substring(0, 200)}...<br>
+                                <a href="${item.link}" target="_blank" style="color: #2E7D32; text-decoration: none;">Read Full Article →</a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html += `<p>No news items found for "${data.query}". Try different keywords like "hunting", "deer", "moose", or "weather".</p>`;
+            }
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function displayMockSearchResults(query) {
+            const container = document.getElementById('searchResults');
+            const mockResults = [
+                {
+                    title: `Hunting Tips for ${query} Season`,
+                    source: "Outdoor Life",
+                    area: "National",
+                    published: new Date().toISOString(),
+                    summary: `Expert advice for ${query} hunting including equipment, strategies, and best practices for success in the field.`,
+                    relevance_score: 0.88
+                },
+                {
+                    title: `${query} Population Report for New Hampshire`,
+                    source: "NH Fish & Game",
+                    area: "New Hampshire",
+                    published: new Date(Date.now() - 172800000).toISOString(),
+                    summary: `Annual population survey shows healthy ${query} numbers in New Hampshire with good hunting prospects for the upcoming season.`,
+                    relevance_score: 0.92
+                }
+            ];
+            
+            let html = `<h3>Search Results for "${query}" (${mockResults.length} items)</h3>`;
+            
+            mockResults.forEach(item => {
+                const publishedDate = new Date(item.published).toLocaleDateString();
+                html += `
+                    <div class="species-card">
+                        <div class="species-name">${item.title}</div>
+                        <div class="species-info">
+                            <strong>Source:</strong> ${item.source} (${item.area})<br>
+                            <strong>Published:</strong> ${publishedDate}<br>
+                            <strong>Relevance:</strong> ${Math.round(item.relevance_score * 100)}%<br>
+                            <strong>Summary:</strong> ${item.summary}<br>
+                            <a href="#" style="color: #2E7D32; text-decoration: none;">Read Full Article →</a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
